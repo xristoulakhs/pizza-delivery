@@ -106,9 +106,9 @@ int main()
 	    pthread_join(threads[i],NULL);
 	}
 	
-	avg_cold= avg_cold/Ncust;
-	avg_service= avg_service/Ncust;
-	avg_wait= avg_wait/Ncust;
+	avg_cold= avg_cold/success; //epeidi einai mono gia epituximenes paraggelies
+	avg_service= avg_service/success; //epeidi einai mono gia epituximenes
+	avg_wait= avg_wait/Ncust; //perilambanontai oles oi paraggelies
 	
 	printf("The number of successes was %i and the number of failures was %i.\n",success,failure);
 	printf("The average waiting time was %f and the max waiting time was %i.\n",avg_wait,max_wait);
@@ -200,11 +200,16 @@ void *order(void *x){
 	
 	pizza=rand_r(&seed) Norderhigh + Norderlow;
 	
-	payment_delay(&seed) Tpaymenthigh + Tpaymentlow;
-	//sleep(payment_delay);
+	double failurePos = ((double)rand_r(&seed) / RAND_MAX); //dinei times sto diastima [0,1]
+	if(falurePos==0){
+		rc=pthread_mutex_lock(&lockfailure);
+		failure++;
+		rc=pthread_mutex_unlock(&lockfailure);
+		pthread_exit(NULL);
+	}
 	
-	//na balw kwdika gia pithanotita apotuxias
-	//kai auksomeiwsi epituximenwn paraggeliwn
+	payment_delay(&seed) Tpaymenthigh + Tpaymentlow;
+	sleep(payment_delay);
 	
 	rc=pthread_mutex_lock(&locktel);
 	Ntel++;
@@ -217,9 +222,9 @@ void *order(void *x){
 	earnings+=Cpizza*pizza;
 	rc=pthread_mutex_unlock(&lockearn);
 	
-	//rc=pthread_mutex_lock(&locksuccess);
-	//success++;
-	//rc=pthread_mutex_unlock(&locksuccess);
+	rc=pthread_mutex_lock(&locksuccess);
+	success++;
+	rc=pthread_mutex_unlock(&locksuccess);
 	
 	clock_gettime(CLOCK_REALTIME,&start_prep);
 	
