@@ -150,8 +150,8 @@ int main()
 }
 
 void *order(void *x){
-
-    int wait_time;
+	
+    	int wait_time;
 	int prep_time;
 	int deliver_time
 	int order_time;
@@ -161,7 +161,7 @@ void *order(void *x){
 	struct timespec start_cold, finish_cold;
 	struct timespec start_prep, finish_prep;
 	struct timespec start_del, finish_del;
-    int rc;
+    	int rc;
 	unsigned int payment_delay;
 	unsigned int pizza;
 	unsigned int call_delay;
